@@ -1,0 +1,21 @@
+Brainstorming ideas for what to use database for:
+
+    - Chess database
+        Store multiple games, reference them, find the move that led to the most wins, see which openings led to the most wins, etc.
+        
+        Game object:
+            List<Move> moves
+            String outcome ("white win", "black win", "stalemate", "draw by repitition", "draw by insufficient material", etc.)
+        
+        Move object:
+            int moveNumber
+            String color ("White", "Black")
+            String notation (proper chess notation)
+
+        Relational database:
+            one game includes multiple moves (obviously)
+            one move can be involved with multiple games (e.g. many games start with e4)
+
+        Maybe code a working chess game that utilizes the database
+
+    - 

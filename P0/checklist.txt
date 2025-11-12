@@ -1,0 +1,11 @@
+- Java
+- Peristence (consistent data formatting)
+- Separation of concerns (Repo, Service, other layers)
+- Must include at least 2 class objects/models
+- Continue running until the user decides to stop
+- Handle errors gracefully and exit gracefully
+- Persisted data must include multiple types of objects from your application
+- Persisted data must include at least one many-to-many relationship
+- If persisting in sql, data must be normalized to 3NF
+- Project should be included in a public git repo
+- That repo should be a part of the cohort organization (naming convention: P0RocheB)
