@@ -9,3 +9,7 @@
 - If persisting in sql, data must be normalized to 3NF
 - Project should be included in a public git repo
 - That repo should be a part of the cohort organization (naming convention: P0RocheB)
+- Must include unit testing
+    - at least 10 individual tests
+    - mock any repo interaction
+    - feature happy path, negative result tests, and edge cases

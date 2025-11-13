@@ -5,11 +5,39 @@ import java.sql.Date;
 
 public class Game {
     private List<Move> moves;
-    private String white, black, outcome, event;
+    private String white, black, result, event;
     private Date date;
 
     public Game(String pgn){
-        
+        String[] split = pgn.split("\\[");
+        for(int i = 1; i < split.length; i++){
+            String info = split[i].substring(0, split[i].indexOf('\"')-1);
+            String value = split[i].substring(split[i].indexOf('\"')+1, split[i].lastIndexOf('\"'));
+            switch(info){
+                case "Event":
+                    this.event = value;
+                    break;
+                case "Date":
+                    value = value.replace("??", "01");
+                    value = value.replace('.', '-');
+                    this.date = Date.valueOf(value);
+                    break;
+                case "White":
+                    this.white = value;
+                    break;
+                case "Black":
+                    this.black = value;
+                    break;
+                case "Result":
+                    this.result = value;
+                    break;
+            }
+        }
+        System.out.println(event);
+        System.out.println(date);
+        System.out.println(white);
+        System.out.println(black);
+        System.out.println(result);
     }
 }
 
