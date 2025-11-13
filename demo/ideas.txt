@@ -6,6 +6,7 @@ Brainstorming ideas for what to use database for:
         Game object:
             List<Move> moves
             String outcome ("white win", "black win", "stalemate", "draw by repitition", "draw by insufficient material", etc.)
+            // outcome might have to also be in proper chess notation instead (0-1, 1-0, 1/2-1/2)
         
         Move object:
             int moveNumber
