@@ -23,6 +23,8 @@ public class Move {
 
     public boolean isCapture(){ return notation.contains("x"); }
 
+    public boolean isPromotion(){ return notation.contains("="); }
+
     public String getPiece(){
         switch (notation.charAt(0)){
             case 'N': return "Knight";
