@@ -45,4 +45,8 @@ public class Move {
         }
     }
 
+    public String getSquare(){
+        return notation.substring(notation.lastIndexOf("[1-8]")-1, notation.lastIndexOf("[1-8]")+1);
+    }
+
 }

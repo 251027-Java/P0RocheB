@@ -2,7 +2,7 @@ package com.example;
 
 public class Main {
     public static void main(String[] args) {
-        Game game = new Game("[Event \"Polerio\"]\r\n" + //
+        Game game = new Game(1, "[Event \"Polerio\"]\r\n" + //
                         "[Site \"Rome\"]\r\n" + //
                         "[Date \"1610.??.??\"]\r\n" + //
                         "[Round \"?\"]\r\n" + //

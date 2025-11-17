@@ -5,11 +5,23 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 public class Game {
+    private int game_id;
     private List<Move> moves;
     private String white, black, result, event;
     private Date date;
 
-    public Game(String pgn){
+    public Game(int game_id, List<Move> moves, String white, String black, String result, String event, Date date){
+        this.game_id = game_id;
+        this.moves = moves;
+        this.white = white;
+        this.black = black;
+        this.result = result;
+        this.event = event;
+        this.date = date;
+    }
+
+    public Game(int game_id, String pgn){
+        this.game_id = game_id;
         String[] split = pgn.split("\\[");
 
         //Parse through beginning section PGN file and grab general information
@@ -59,6 +71,13 @@ public class Game {
             else { color = "white"; }
         }
     }
+
+    public int getID(){ return game_id; }
+    public String getWhite(){ return white; }
+    public String getBlack(){ return black; }
+    public String getEvent(){ return event; }
+    public String getResult(){ return result; }
+    public Date getDate(){ return date; }
 }
 
 /* PGN examples
