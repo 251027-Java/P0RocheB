@@ -1,1 +1,1 @@
-SELECT * FROM notations where notations.notation = 'O-O-O'
+SELECT COUNT(*) FROM notations

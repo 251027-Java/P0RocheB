@@ -193,4 +193,24 @@ public class PostgreSQLRepository{
             stmt.execute(sql);
         } catch (SQLException e) {e.printStackTrace();}
     }
+
+    public boolean gamesIsEmpty(){
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "SELECT COUNT(*) from ChessGames.games";
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            return rs.getInt("count") == 0;
+        } catch (SQLException e) {e.printStackTrace();}
+        return false;
+    }
+
+    public boolean notationsIsEmpty(){
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "SELECT COUNT(*) from ChessGames.notations";
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            return rs.getInt("count") == 0;
+        } catch (SQLException e) {e.printStackTrace();}
+        return false;
+    }
 }

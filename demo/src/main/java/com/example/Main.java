@@ -8,7 +8,7 @@ import com.example.service.Service;
 public class Main {
     public static void main(String[] args) throws SQLException{
         PostgreSQLRepository repo = new PostgreSQLRepository();
-        //Service service = new Service(repo);
+        Service service = new Service(repo);
         /*
         Game game = new Game(1, "[Event \"Polerio\"]\n" + //
                         "[Site \"Rome\"]\n" + //
@@ -56,5 +56,7 @@ public class Main {
         repo.createGame(game);
         */
         System.out.println(repo.readGame(1));
+        System.out.println(repo.readGame(2));
+        System.out.println(repo.readGame(3));
     }
 }

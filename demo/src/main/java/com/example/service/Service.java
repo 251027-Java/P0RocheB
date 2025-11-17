@@ -6,6 +6,7 @@ import com.example.repository.PostgreSQLRepository;
 
 import java.util.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -14,18 +15,19 @@ public class Service {
 
     public Service(PostgreSQLRepository repo){
         this.repo = repo;
-        loadNotations();
-        loadGames();
+        if(repo.notationsIsEmpty()){ loadNotations(); }
+        if(repo.gamesIsEmpty()){ loadGames(); }
     }
 
     public void loadNotations(){
+        System.out.println("Loading notations");
         FileInputStream inputStream = null;
         Scanner sc = null;
         try {
             inputStream = new FileInputStream("./demo/src/main/resources/notations.txt");
             sc = new Scanner(inputStream, "UTF-8");
             double lineCount = Files.lines(Paths.get("./demo/src/main/resources/notations.txt")).count();
-            double i = 0;
+            double i = 1;
             String progressBar = "";
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -60,18 +62,25 @@ public class Service {
     }
 
     public void loadGames(){
+        System.out.println("Loading games");
         FileInputStream inputStream = null;
         Scanner sc = null;
         try {
-            inputStream = new FileInputStream("./demo/src/main/resources/notations.txt");
+            inputStream = new FileInputStream("./demo/src/main/resources/DATABASE4U.txt");
             sc = new Scanner(inputStream, "UTF-8");
-            double lineCount = Files.lines(Paths.get("./demo/src/main/resources/notations.txt")).count();
-            double i = 0;
+            double lineCount = Files.lines(Paths.get("./demo/src/main/resources/DATABASE4U.txt"), StandardCharsets.UTF_8).count();
+            double i = 1;
+            int id = 1;
             String progressBar = "";
             while (sc.hasNextLine()) {
+                String game = "";
                 String line = sc.nextLine();
-                repo.createNotations(new Move(0, "", line));
-                i++;
+                while(!line.equals("\n")){
+                    game += line;
+                    i++;
+                }
+                repo.createGame(new Game(id, game));
+                id++;
                 progressBar = "[";
                 for(int j = 0; j < (i/lineCount)*100; j++){
                     progressBar += "=";
