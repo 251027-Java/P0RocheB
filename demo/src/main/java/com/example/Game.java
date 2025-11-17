@@ -51,7 +51,7 @@ public class Game {
 
         //Edit the rest of the PGN file, leaving just moves in algabreic chess notation
         String notation = split[split.length-1].substring(split[split.length-1].indexOf("1."));
-        notation = notation.replaceAll("[\\d]*\\.|\\$1|\\{[^}]*}|\n", "");
+        notation = notation.replaceAll("[\\d]*\\.|\\$1|\\{[^}]*}|\n", " ");
         int parCount = 0;
         String editedNotation = "";
         for(int i = 0; i < notation.length(); i++){
@@ -64,20 +64,39 @@ public class Game {
 
         //Store array of Move objects
         String color = "white";
-        for(int i = 0; i < notations.length-1; i++){
-            System.out.println(notations[i]);
-            moves.add(new Move(i+1, color, notations[i]));
+        for(int i = 1; i < notations.length-1; i++){
+            moves.add(new Move(i, color, notations[i]));
             if(color.equals("white")) color = "black";
             else { color = "white"; }
         }
     }
 
     public int getID(){ return game_id; }
+    public List<Move> getMoves(){ return moves; }
     public String getWhite(){ return white; }
     public String getBlack(){ return black; }
     public String getEvent(){ return event; }
     public String getResult(){ return result; }
     public Date getDate(){ return date; }
+
+    public String toString(){
+        String ret =
+            "[Event \"" + event + "\"]\n" +
+            "[Date \"" + date + "\"]\n" +
+            "[White \"" + white + "\"]\n" +
+            "[Black \"" + black + "\"]\n" +
+            "[Result \"" + result + "\"]\n\n";
+        for(int i = 0; i < ((moves.size()+1)/2); i++){
+            ret += (i+1) + ". " + moves.get(i*2);
+            if((i*2)+1 < moves.size()){
+                ret +=  " " + moves.get((i*2)+1);
+            }
+            ret += " ";
+        }
+        ret += result;
+        return ret;
+
+    }
 }
 
 /* PGN examples

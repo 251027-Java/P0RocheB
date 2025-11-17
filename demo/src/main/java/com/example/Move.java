@@ -13,13 +13,13 @@ public class Move {
 
     public int getMoveNumber(){ return moveNumber; }
     public String getColor(){ return color; }
-    public String getNotation(){ return notation; }
+    public String getNotation(){ return toString(); }
 
     public boolean isCheck(){ return notation.charAt(notation.length()-1) == '+' || isMate(); }
     public boolean isMate(){ return notation.charAt(notation.length()-1) == '#'; }
 
-    public boolean isShortCastle(){ return notation.equals("O-O"); }
-    public boolean isLongCastle(){ return notation.equals("O-O-O"); }
+    public boolean isShortCastle(){ return notation.startsWith("O-O") && !isLongCastle(); }
+    public boolean isLongCastle(){ return notation.startsWith("O-O-O"); }
 
     public boolean isCapture(){ return notation.contains("x"); }
 
@@ -46,7 +46,22 @@ public class Move {
     }
 
     public String getSquare(){
-        return notation.substring(notation.lastIndexOf("[1-8]")-1, notation.lastIndexOf("[1-8]")+1);
+        int adjust = 0;
+        if(isShortCastle() || isLongCastle()){
+            char number = color.equals("white") ? '1' : '8';
+            char letter = isShortCastle() ? 'g' : 'c';
+            return "" + letter + number;
+        }
+        if(notation.charAt(notation.length()-1) == '+' || notation.charAt(notation.length()-1) == '#'){
+            adjust++;
+        }
+        if(notation.charAt(notation.length()-(1+adjust)) == 'Q' || notation.charAt(notation.length()-(1+adjust)) == 'N'
+        || notation.charAt(notation.length()-(1+adjust)) == 'B' || notation.charAt(notation.length()-(1+adjust)) == 'R'){
+            adjust += 2;
+        }
+        return notation.substring(notation.length()-(adjust+2), notation.length()-adjust);
     }
+
+    public String toString(){ return notation; }
 
 }

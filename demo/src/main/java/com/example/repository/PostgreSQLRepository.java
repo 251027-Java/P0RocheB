@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class PostgreSQLRepository{
-    private static final String Postgre_URL = "jdbc:postgresql://localhost:5432:chessdb";
+    private static final String Postgre_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String Postgre_User = "postgres";
     private static final String Postgre_PW = "secret";
     private Connection connection;
-
+    
     public PostgreSQLRepository() throws SQLException{
         try{
             connection = DriverManager.getConnection(Postgre_URL, Postgre_User, Postgre_PW);
@@ -27,14 +27,14 @@ public class PostgreSQLRepository{
                         "event VARCHAR(100) NOT NULL," +
                         "result VARCHAR(10) NOT NULL" +
                         ");" +  
-                        "CREATE TABLE IF NOT EXISTS ChessGames.move ( " +
+                        "CREATE TABLE IF NOT EXISTS ChessGames.moves ( " +
                         "move_number INT NOT NULL, " +
                         "game_id INT NOT NULL, " +
                         "color VARCHAR(5),  " +
                         "notation VARCHAR (10)," +
                         "PRIMARY KEY (move_number, game_id)" +
                         ");" +
-                        "CREATE TABLE IF NOT EXISTS ChessGames.notation ( " +
+                        "CREATE TABLE IF NOT EXISTS ChessGames.notations ( " +
                         "notation VARCHAR (10) PRIMARY KEY, " +
                         "piece VARCHAR (10) NOT NULL, " +
                         "square VARCHAR (2) NOT NULL," +
@@ -45,10 +45,10 @@ public class PostgreSQLRepository{
                         "isCapture boolean NOT NULL,  " +
                         "isPromotion boolean NOT NULL " +
                         ");" + 
-                        "ALTER TABLE ChessGames.move " +
+                        "ALTER TABLE ChessGames.moves " +
                         "ADD FOREIGN KEY (game_id) REFERENCES ChessGames.games(game_id) ON DELETE CASCADE; " +
-                        "ALTER TABLE ChessGames.move " +
-                        "ADD FOREIGN KEY (notation) REFERENCES ChessGames.notation(notation); " +
+                        "ALTER TABLE ChessGames.moves " +
+                        "ADD FOREIGN KEY (notation) REFERENCES ChessGames.notations(notation); " +
                         ";";
                 stmt.execute(sql);
                 System.out.println("Successful creation of PostgreSQl database");
@@ -56,7 +56,6 @@ public class PostgreSQLRepository{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void createGame(Game game) {
@@ -74,6 +73,44 @@ public class PostgreSQLRepository{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        createMoves(game.getID(), game.getMoves());
+    }
+
+    public void createMoves(int id, List<Move> moves){
+        String sql =
+            "INSERT INTO ChessGames.moves (game_id, move_number, color, notation)" +
+            "VALUES (?, ?, ?, ?)";
+        for(Move move : moves){
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                stmt.setInt(2, move.getMoveNumber());
+                stmt.setString(3, move.getColor());
+                stmt.setString(4, move.getNotation());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void createNotations(Move move){
+        String sql =
+            "INSERT INTO ChessGames.notations (notation, piece, square, isCheck, isMate, isShortCastle, isLongCastle, isCapture, isPromotion)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, move.getNotation());
+            stmt.setString(2, move.getPiece());
+            stmt.setString(3, move.getSquare());
+            stmt.setBoolean(4, move.isCheck());
+            stmt.setBoolean(5, move.isMate());
+            stmt.setBoolean(6, move.isShortCastle());
+            stmt.setBoolean(7, move.isLongCastle());
+            stmt.setBoolean(8, move.isCapture());
+            stmt.setBoolean(9, move.isPromotion());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public Game readGame(int id) {
@@ -86,7 +123,7 @@ public class PostgreSQLRepository{
                 Move move = new Move(
                     rs.getInt("move_number"),
                     rs.getString("color"),
-                    rs.getString("notaion"));
+                    rs.getString("notation"));
                 moves.add(move);
             }
         } catch (SQLException e) {
