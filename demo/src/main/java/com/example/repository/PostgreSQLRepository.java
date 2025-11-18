@@ -36,14 +36,14 @@ public class PostgreSQLRepository{
                         ");" +
                         "CREATE TABLE IF NOT EXISTS ChessGames.notations ( " +
                         "notation VARCHAR (10) PRIMARY KEY, " +
-                        "piece VARCHAR (10) NOT NULL, " +
-                        "square VARCHAR (2) NOT NULL," +
-                        "isCheck boolean NOT NULL, " +
-                        "isMate boolean NOT NULL, " +
-                        "isShortCastle boolean NOT NULL," + 
-                        "isLongCastle boolean NOT NULL, " +
-                        "isCapture boolean NOT NULL,  " +
-                        "isPromotion boolean NOT NULL " +
+                        "piece VARCHAR (10), " +
+                        "square VARCHAR (2)," +
+                        "isCheck boolean, " +
+                        "isMate boolean, " +
+                        "isShortCastle boolean," + 
+                        "isLongCastle boolean, " +
+                        "isCapture boolean,  " +
+                        "isPromotion boolean " +
                         ");" + 
                         "ALTER TABLE ChessGames.moves " +
                         "ADD FOREIGN KEY (game_id) REFERENCES ChessGames.games(game_id) ON DELETE CASCADE; " +
@@ -88,12 +88,25 @@ public class PostgreSQLRepository{
                 stmt.setString(4, move.getNotation());
                 stmt.executeUpdate();
             } catch (SQLException e) {
+                System.out.println(moves);
                 e.printStackTrace();
+                System.exit(1);
             }
         }
     }
 
     public void createNotations(Move move){
+        if(move.getPiece() == null){
+            String sql =
+            "INSERT INTO ChessGames.notations (notation) VALUES (?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, move.getNotation());
+                stmt.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            return;
+        }
         String sql =
             "INSERT INTO ChessGames.notations (notation, piece, square, isCheck, isMate, isShortCastle, isLongCastle, isCapture, isPromotion)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

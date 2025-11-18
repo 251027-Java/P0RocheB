@@ -27,6 +27,7 @@ public class Move {
 
     public String getPiece(){
         switch (notation.charAt(0)){
+            case 'Z': return null;
             case 'N': return "Knight";
             case 'B': return "Bishop";
             case 'R': return "Rook";
@@ -47,6 +48,7 @@ public class Move {
 
     public String getSquare(){
         int adjust = 0;
+        if(getPiece() == null){ return null; }
         if(isShortCastle() || isLongCastle()){
             char number = color.equals("white") ? '1' : '8';
             char letter = isShortCastle() ? 'g' : 'c';

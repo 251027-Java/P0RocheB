@@ -22,17 +22,22 @@ public class Game {
 
     public Game(int game_id, String pgn){
         this.game_id = game_id;
-        String[] split = pgn.split("\\[");
+        String[] separate = pgn.split("\n\n");
+        String[] info = separate[0].split("\\]\n");
+        String moveList = separate[1];
 
         //Parse through beginning section PGN file and grab general information
-        for(int i = 1; i < split.length; i++){
-            String info = split[i].substring(0, split[i].indexOf('\"')-1);
-            String value = split[i].substring(split[i].indexOf('\"')+1, split[i].lastIndexOf('\"'));
-            switch(info){
+        for(int i = 0; i < info.length; i++){
+            String key = info[i].substring(1, info[i].indexOf('\"')-1);
+            String value = info[i].substring(info[i].indexOf('\"')+1, info[i].lastIndexOf('\"'));
+            switch(key){
                 case "Event":
                     this.event = value;
                     break;
                 case "Date":
+                    if(value.indexOf('.') == 2){
+                        value = "00" + value;
+                    }
                     value = value.replace("??", "01");
                     value = value.replace('.', '-');
                     this.date = Date.valueOf(value);
@@ -46,20 +51,36 @@ public class Game {
                 case "Result":
                     this.result = value;
                     break;
+                case "PlyCount":
+                    if(value.equals("0")){
+                        this.game_id = 0;
+                        return;
+                    }
             }
         }
 
         //Edit the rest of the PGN file, leaving just moves in algabreic chess notation
-        String notation = split[split.length-1].substring(split[split.length-1].indexOf("1."));
-        notation = notation.replaceAll("[\\d]*\\.|\\$1|\\{[^}]*}|\n", " ");
-        int parCount = 0;
+        int count = 0;
         String editedNotation = "";
-        for(int i = 0; i < notation.length(); i++){
-            if(notation.charAt(i) == '(') parCount++;
-            else if(notation.charAt(i) == ')') parCount--;
-            else if(parCount == 0){ editedNotation += notation.charAt(i); }
+        for(int i = 0; i < moveList.length(); i++){
+            if(moveList.charAt(i) == '{') count++;
+            else if(moveList.charAt(i) == '}') count--;
+            else if(count == 0){ editedNotation += moveList.charAt(i); }
         }
-        String[] notations = editedNotation.split("[ ]+");
+        moveList = editedNotation;
+        editedNotation = "";
+        count = 0;
+        for(int i = 0; i < moveList.length(); i++){
+            if(moveList.charAt(i) == '(') count++;
+            else if(moveList.charAt(i) == ')') count--;
+            else if(count == 0){ editedNotation += moveList.charAt(i); }
+        }
+        moveList = editedNotation;
+        //if(moveList.indexOf("1.") == -1){ game_id = 0; return; }
+        moveList = moveList.substring(moveList.indexOf("1."));
+        moveList = moveList.replaceAll("[\\d]*\\.|\\$[\\d]+|\n", " ");
+        
+        String[] notations = moveList.split("[ ]+");
         moves = new ArrayList<>();
 
         //Store array of Move objects
