@@ -24,6 +24,25 @@ public class Service {
         if(repo.gamesIsEmpty()){ loadGames(); }
     }
 
+    public void showBestMove(List<String> moves){
+        System.out.println(repo.getBestMove(moves));
+    }
+
+    public boolean isNotation(String notation){
+        return repo.isNotation(notation);
+    }
+
+    public void help(){
+        System.out.println(
+                        "List of operations:\n" +
+                        "help: displays this list of operations\n"+
+                        "exit: closes the application\n"+
+                        "show best move / sbm: prints the next best move in algebraic notation\n"+
+                        "print moves / pm: prints the list of moves of your current position\n" +
+                        "undo move / um: removes the last added move\n"+
+                        "clear moves / cm: clears your list of moves to start over\n\n");
+    }
+
     public void loadNotations(){
         System.out.println("Loading notations");
         FileInputStream inputStream = null;
@@ -50,7 +69,7 @@ public class Service {
                 System.out.print(progressBar);
             }
             System.out.println(progressBar);
-            System.out.println("Successfully loaded all notations into chessql");
+            System.out.println("Successfully loaded all notations into ChesSQL");
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -122,7 +141,7 @@ public class Service {
                 }
             }
             System.out.print(progressBar.toString());
-            System.out.println("Successfully loaded all games into chessql");
+            System.out.println("Successfully loaded all games into ChesSQL");
             br.close();
         } catch (Exception e){
             e.printStackTrace();

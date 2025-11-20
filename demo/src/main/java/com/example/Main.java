@@ -1,7 +1,9 @@
 package com.example;
 
 import java.sql.SQLException;
-
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 import com.example.repository.PostgreSQLRepository;
 import com.example.service.Service;
 
@@ -9,33 +11,55 @@ public class Main {
     public static void main(String[] args) throws SQLException{
         PostgreSQLRepository repo = new PostgreSQLRepository();
         Service service = new Service(repo);
-        /*
-        String string = "[Event \"London International Masters\"]                                                                      ]\n" + //
-                        "[Site \"London\"]\n" + //
-                        "[Date \"1883.05.31\"]\n" + //
-                        "[Round \"16\"]\n" + //
-                        "[White \"Mason, James\"]\n" + //
-                        "[Black \"Winawer, Szymon\"]\n" + //
-                        "[Result \"0-1\"]\n" + //
-                        "[SetUp \"1\"]\n" + //
-                        "[FEN \"7k/3n4/4p2p/3pPp1P/1Np2P2/6K1/PP2Q3/7q b - - 0 43\"]\n" + //
-                        "[PlyCount \"13\"]\n" + //
-                        "[EventDate \"1883.04.26\"]\n" + //
-                        "[EventType \"tourn\"]\n" + //
-                        "[EventRounds \"26\"]\n" + //
-                        "[SourceTitle \"EXT 2018\"]\n" + //
-                        "[SourceDate \"2017.10.13\"]\n" + //
-                        "[SourceVersion \"1\"]\n" + //
-                        "[SourceVersionDate \"2017.10.13\"]\n" + //
-                        "[SourceQuality \"1\"]\n" + //
-                        "\n" + //
-                        "{Correction of the adjourned position. See previous game.} 43... Nc5 {White is\n" + //
-                        "lost} 44. Qg2 Ne4+ 45. Kf3 Qe1 (45... Qxh5+ 46. Ke3 Qd1) 46. Qh2 Nd2+ (46...\n" + //
-                        "Qf1+ 47. Ke3 Qd1 48. Qe2 Qg1+) 47. Kg2 Qf1+ 48. Kg3 Qf3+ 49. Kh4 Qg4# 0-1";
-        Game game = new Game(1, string);
-        */
-        System.out.println(repo.readGame(1));
-        System.out.println(repo.readGame(2));
-        System.out.println(repo.readGame(3));
+        Scanner scanner = new Scanner(System.in);
+        List<String> moves = new ArrayList<>();
+        greeting();
+        String input;
+        do{
+            System.out.print(">>> ");
+            input = scanner.nextLine();
+            switch(input.toLowerCase()){
+                case "help": service.help(); break;
+                case "show best move":
+                case "sbm": service.showBestMove(moves); break;
+                case "print moves":
+                case "pm": printMoves(moves); break;
+                case "undo move":
+                case "um": if(moves.isEmpty()){
+                            System.out.println("Your list is already empty");
+                            } else {moves.removeLast();}
+                            break;
+                case "clear moves":
+                case "cm": moves.clear(); break;
+                case "exit": break;
+                default: if(service.isNotation(input)){
+                            moves.add(input);
+                            } else {System.out.println("Invalid entry");}
+            }
+        } while (!input.equalsIgnoreCase("exit"));
+        System.out.println("Goodbye!");
+        scanner.close();
+    }
+
+    public static void printMoves(List<String> moves){
+        for(int i = 0; i < moves.size(); i++){
+            System.out.println((i+1) + ". " + moves.get(i));
+        }
+    }
+
+    public static void greeting(){
+        System.out.println(
+            "   █████████  █████                        █████████     ██████    █████\n" +
+            "  ███░░░░░███░░███                        ███░░░░░███  ███░░░░███ ░░███       \n" +
+            " ███     ░░░  ░███████    ██████   █████ ░███    ░░░  ███    ░░███ ░███       \n" +
+            "░███          ░███░░███  ███░░███ ███░░  ░░█████████ ░███     ░███ ░███       \n" +
+            "░███          ░███ ░███ ░███████ ░░█████  ░░░░░░░░███░███   ██░███ ░███       \n" +
+            "░░███     ███ ░███ ░███ ░███░░░   ░░░░███ ███    ░███░░███ ░░████  ░███      █\n" +
+            " ░░█████████  ████ █████░░██████  ██████ ░░█████████  ░░░██████░██ ███████████\n" +
+            "  ░░░░░░░░░  ░░░░ ░░░░░  ░░░░░░  ░░░░░░   ░░░░░░░░░     ░░░░░░ ░░ ░░░░░░░░░░░ \n\n\n" + 
+            "Welcome to ChesSQL! The database-backed application where you can see which move\n" + 
+            "has lead to the most wins from a current position. Type \"help\" to get a list of\n" +
+            "options, \"exit\" to quit the application, or an algebraic move notation to begin\n" +
+            "setting up a position.\n\n");
     }
 }

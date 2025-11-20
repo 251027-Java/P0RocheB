@@ -51,11 +51,41 @@ public class PostgreSQLRepository{
                         "ADD FOREIGN KEY (notation) REFERENCES ChessGames.notations(notation); " +
                         ";";
                 stmt.execute(sql);
-                System.out.println("Successful creation of PostgreSQl database");
+                System.out.println("Successful connection to PostgreSQl database");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getBestMove(List<String> moves){
+        try (Statement stmt = connection.createStatement()) {
+            int moveNumber = moves.size() + 1;
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT move").append(moveNumber).append(".notation, COUNT(*) AS wins ");
+            sql.append("FROM chessgames.moves move1 ");
+            for(int i = 2; i < moveNumber+1; i++){
+                sql.append("JOIN chessgames.moves move").append(i).append(" ");
+                sql.append("ON move").append(i-1).append(".game_id = move").append(i).append(".game_id ");
+            }
+            sql.append("JOIN chessgames.games g on g.game_id = move1.game_id ");
+            sql.append("WHERE move1.move_number = 1 ");
+            for(int i = 0; i < moves.size(); i++){
+                sql.append("AND move").append(i+1).append(".notation = \'").append(moves.get(i)).append("\' ");
+                sql.append("AND move").append(i+2).append(".move_number = ").append(i+2).append(" ");
+            }
+            sql.append("AND g.result = \'");
+            if(moveNumber % 2 == 1)sql.append("1-0\' ");
+            else sql.append("0-1\' ");
+            sql.append("GROUP BY move").append(moveNumber).append(".notation ");
+            sql.append("ORDER BY wins DESC LIMIT 1;");
+            ResultSet rs = stmt.executeQuery(sql.toString());
+            rs.next();
+            return rs.getString("notation");
+        } catch (SQLException e) {e.printStackTrace();}
+        
+
+        return "Couldn't find best move";
     }
 
     public void createGame(Game game) {
@@ -164,10 +194,6 @@ public class PostgreSQLRepository{
         return null;
     }
 
-    public void updateExpense(Game game) {
-
-    }
-
     public void deleteGame(int id) {
         if (readGame(id) == null){ return; }
         String sql =
@@ -194,10 +220,6 @@ public class PostgreSQLRepository{
         return ret;
     }
 
-    public void saveGames(List<Game> games) {
-
-    }
-
     public void clearRepo() {
         try (Statement stmt = connection.createStatement()) {
             String sql = "TRUNCATE TABLE ChessGames.games";
@@ -222,6 +244,21 @@ public class PostgreSQLRepository{
             rs.next();
             return rs.getInt("count") == 0;
         } catch (SQLException e) {e.printStackTrace();}
+        return false;
+    }
+
+    public boolean isNotation(String notation){
+        if (notation == null) return false;
+        String sql =
+                "SELECT COUNT(*) FROM ChessGames.notations WHERE notations.notation = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, notation);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return rs.getInt("count") != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }
