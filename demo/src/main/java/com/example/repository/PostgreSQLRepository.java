@@ -88,9 +88,7 @@ public class PostgreSQLRepository{
                 stmt.setString(4, move.getNotation());
                 stmt.executeUpdate();
             } catch (SQLException e) {
-                System.out.println(moves);
-                e.printStackTrace();
-                System.exit(1);
+                System.out.println("Unable to add moves to database");
             }
         }
     }

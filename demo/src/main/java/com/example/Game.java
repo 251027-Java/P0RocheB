@@ -25,7 +25,6 @@ public class Game {
         String[] separate = pgn.split("\n\n");
         String[] info = separate[0].split("\\]\n");
         String moveList = separate[1];
-
         //Parse through beginning section PGN file and grab general information
         for(int i = 0; i < info.length; i++){
             String key = info[i].substring(1, info[i].indexOf('\"')-1);
@@ -60,23 +59,20 @@ public class Game {
         }
 
         //Edit the rest of the PGN file, leaving just moves in algabreic chess notation
-        int count = 0;
-        String editedNotation = "";
+        int braceCount = 0;
+        int parenCount = 0;
+        StringBuilder editedNotation = new StringBuilder();
         for(int i = 0; i < moveList.length(); i++){
-            if(moveList.charAt(i) == '{') count++;
-            else if(moveList.charAt(i) == '}') count--;
-            else if(count == 0){ editedNotation += moveList.charAt(i); }
+            char c = moveList.charAt(i);
+            if(c == '{') {braceCount++; continue;}
+            if(c == '}') {braceCount--; continue;}
+            if(c == '(') {parenCount++; continue;}
+            if(c == ')') {parenCount++; continue;}
+
+            if(braceCount == 0 && parenCount == 0) editedNotation.append(c);
         }
-        moveList = editedNotation;
-        editedNotation = "";
-        count = 0;
-        for(int i = 0; i < moveList.length(); i++){
-            if(moveList.charAt(i) == '(') count++;
-            else if(moveList.charAt(i) == ')') count--;
-            else if(count == 0){ editedNotation += moveList.charAt(i); }
-        }
-        moveList = editedNotation;
-        //if(moveList.indexOf("1.") == -1){ game_id = 0; return; }
+        moveList = editedNotation.toString();
+        if(moveList.indexOf("1.") == -1){ this.game_id = 0; return; }
         moveList = moveList.substring(moveList.indexOf("1."));
         moveList = moveList.replaceAll("[\\d]*\\.|\\$[\\d]+|\n", " ");
         
