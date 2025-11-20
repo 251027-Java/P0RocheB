@@ -82,10 +82,9 @@ public class PostgreSQLRepository{
             ResultSet rs = stmt.executeQuery(sql.toString());
             rs.next();
             return rs.getString("notation");
-        } catch (SQLException e) {e.printStackTrace();}
-        
+        } catch (SQLException e) {}
 
-        return "Couldn't find best move";
+        return "Couldn't find best move\nThe database probably doesn't have games with this variation stored,\nor your list of moves is not reachable in a legal chess game.";
     }
 
     public void createGame(Game game) {
