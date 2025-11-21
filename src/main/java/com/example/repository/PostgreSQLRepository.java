@@ -54,6 +54,7 @@ public class PostgreSQLRepository{
                 System.out.println("Successful connection to PostgreSQl database");
             }
         } catch (SQLException e) {
+            System.out.println("Unable to connect to ChesSQL database");
             e.printStackTrace();
         }
     }

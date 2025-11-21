@@ -8,7 +8,6 @@ import java.util.*;
 import java.io.*;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
-import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,9 +47,9 @@ public class Service {
         FileInputStream inputStream = null;
         Scanner sc = null;
         try {
-            inputStream = new FileInputStream("./demo/src/main/resources/notations.txt");
+            inputStream = new FileInputStream("./src/main/resources/notations.txt");
             sc = new Scanner(inputStream, "UTF-8");
-            double byteCount = Files.lines(Paths.get("./demo/src/main/resources/notations.txt")).count();
+            double byteCount = Files.lines(Paths.get("./src/main/resources/notations.txt")).count();
             double i = 1;
             String progressBar = "";
             while (sc.hasNextLine()) {
@@ -58,7 +57,7 @@ public class Service {
                 repo.createNotations(new Move(0, "", line));
                 i++;
                 progressBar = String.format("%05.2f%%", ((i/byteCount)*100));
-                progressBar = "[" + ANSI_GREEN;
+                progressBar += "[" + ANSI_GREEN;
                 for(int j = 0; j < (i/byteCount)*100; j++){
                     progressBar += "=";
                 }
@@ -94,12 +93,12 @@ public class Service {
             .onMalformedInput(CodingErrorAction.REPLACE)
             .onUnmappableCharacter(CodingErrorAction.REPLACE);
             BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream("./demo/src/main/resources/DATABASE4U.txt"), decoder)
+                new InputStreamReader(new FileInputStream("./src/main/resources/games.pgn"), decoder)
             );
-            long byteCount = new File("./demo/src/main/resources/DATABASE4U.txt").length();
+            long byteCount = new File("./src/main/resources/games.pgn").length();
             br.close();
             br = new BufferedReader(
-                new InputStreamReader(new FileInputStream("./demo/src/main/resources/DATABASE4U.txt"), decoder)
+                new InputStreamReader(new FileInputStream("./src/main/resources/games.pgn"), decoder)
             );
             double i = 1;
             int id = 1;

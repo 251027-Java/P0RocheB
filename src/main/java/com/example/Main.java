@@ -30,7 +30,10 @@ public class Main {
                             } else {moves.removeLast();}
                             break;
                 case "clear moves":
-                case "cm": moves.clear(); break;
+                case "cm": if(moves.isEmpty()){
+                            System.out.println("Your list is already empty");
+                            } else {moves.clear();}
+                            break;
                 case "exit": break;
                 default: if(service.isNotation(input)){
                             moves.add(input);
@@ -58,8 +61,8 @@ public class Main {
             " ░░█████████  ████ █████░░██████  ██████ ░░█████████  ░░░██████░██ ███████████\n" +
             "  ░░░░░░░░░  ░░░░ ░░░░░  ░░░░░░  ░░░░░░   ░░░░░░░░░     ░░░░░░ ░░ ░░░░░░░░░░░ \n\n\n" + 
             "Welcome to ChesSQL! The database-backed application where you can see which move\n" + 
-            "has lead to the most wins from a current position. Type \"help\" to get a list of\n" +
-            "options, \"exit\" to quit the application, or an algebraic move notation to begin\n" +
-            "setting up a position.\n\n");
+            "has led to the most wins from a given position. Type \"help\" to get a list of\n" +
+            "options, \"exit\" to quit the application, or a chess move in algebraic notation\n" +
+            "to begin setting up a position.\n\n");
     }
 }

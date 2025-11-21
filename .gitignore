@@ -1,2 +1,2 @@
-demo/src/main/resources/DATABASE4U.txt
-demo/target/classes/DATABASE4U.txt
+src/main/resources/games.pgn
+target/classes/games.pgn
