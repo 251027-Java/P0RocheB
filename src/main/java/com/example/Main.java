@@ -8,11 +8,11 @@ import com.example.repository.PostgreSQLRepository;
 import com.example.service.Service;
 
 public class Main {
+    private static List<String> moves = new ArrayList<>();
     public static void main(String[] args) throws SQLException{
         PostgreSQLRepository repo = new PostgreSQLRepository();
         Service service = new Service(repo);
         Scanner scanner = new Scanner(System.in);
-        List<String> moves = new ArrayList<>();
         greeting();
         String input;
         do{
@@ -23,12 +23,9 @@ public class Main {
                 case "show best move":
                 case "sbm": service.showBestMove(moves); break;
                 case "print moves":
-                case "pm": printMoves(moves); break;
+                case "pm": printMoves(); break;
                 case "undo move":
-                case "um": if(moves.isEmpty()){
-                            System.out.println("Your list is already empty");
-                            } else {moves.removeLast();}
-                            break;
+                case "um": undoMove(); break;
                 case "clear moves":
                 case "cm": if(moves.isEmpty()){
                             System.out.println("Your list is already empty");
@@ -44,10 +41,22 @@ public class Main {
         scanner.close();
     }
 
-    public static void printMoves(List<String> moves){
+    public static void printMoves(){
         for(int i = 0; i < moves.size(); i++){
             System.out.println((i+1) + ". " + moves.get(i));
         }
+    }
+
+    public static void undoMove(){
+        if(moves.isEmpty()){
+            System.out.println("Your list is already empty");
+        } else {moves.removeLast();}
+    }
+
+    public static void clearMoves(){
+        if(moves.isEmpty()){
+            System.out.println("Your list is already empty");
+        } else {moves.clear();}
     }
 
     public static void greeting(){
