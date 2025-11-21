@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.repository.PostgreSQLRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -50,6 +51,13 @@ public class ServiceTest {
         doNothing().when(mockRepo).createNotations(any());
         service.loadNotations();
         verify(mockRepo, atLeastOnce()).createNotations(any());
+    }
+
+    @Test
+    public void testLoadGames_CallsRepoCreateGames() {
+        doNothing().when(mockRepo).createGame(any());
+        service.loadGames("./src/main/resources/testGames.pgn");
+        verify(mockRepo, atLeastOnce()).createGame(any());
     }
 }
 

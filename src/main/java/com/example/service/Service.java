@@ -20,7 +20,7 @@ public class Service {
     public Service(PostgreSQLRepository repo){
         this.repo = repo;
         if(repo.notationsIsEmpty()){ loadNotations(); }
-        if(repo.gamesIsEmpty()){ loadGames(); }
+        if(repo.gamesIsEmpty()){ loadGames("./src/main/resources/games.pgn"); }
     }
 
     public void showBestMove(List<String> moves){
@@ -85,7 +85,7 @@ public class Service {
         }
     }
 
-    public void loadGames(){
+    public void loadGames(String path){
         System.out.println("Loading games");
         try {
             CharsetDecoder decoder = StandardCharsets.UTF_8
@@ -93,12 +93,12 @@ public class Service {
             .onMalformedInput(CodingErrorAction.REPLACE)
             .onUnmappableCharacter(CodingErrorAction.REPLACE);
             BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream("./src/main/resources/games.pgn"), decoder)
+                new InputStreamReader(new FileInputStream(path), decoder)
             );
-            long byteCount = new File("./src/main/resources/games.pgn").length();
+            long byteCount = new File(path).length();
             br.close();
             br = new BufferedReader(
-                new InputStreamReader(new FileInputStream("./src/main/resources/games.pgn"), decoder)
+                new InputStreamReader(new FileInputStream(path), decoder)
             );
             double i = 1;
             int id = 1;
@@ -109,15 +109,15 @@ public class Service {
                 StringBuilder game = new StringBuilder();
                 while (line != null && line.trim().isEmpty() == false) {
                     game.append(line).append("\n");
-                    line = br.readLine();
                     i += line.length();
+                    line = br.readLine();
                 }
                 game.append("\n");
                 line = br.readLine();
                 while (line != null && line.trim().isEmpty() == false) {
                     game.append(line).append("\n");
-                    line = br.readLine();
                     i += line.length();
+                    line = br.readLine();
                 }
                 Game newGame = new Game(id, game.toString());
                 if(newGame.getID() != 0){
